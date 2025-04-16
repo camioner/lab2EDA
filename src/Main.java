@@ -3,6 +3,7 @@
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 class Voto {
     private int id = 0;
@@ -58,7 +59,7 @@ class Voto {
     }
 
 }
-public class Candidato {
+class Candidato {
     private int id;
     private String nombre;
     private String partido;
@@ -138,6 +139,25 @@ class Votante {
 
     public void marcarComoVotado() {
         this.yaVoto = true;
+    }
+
+}
+
+class UrnaElectoral {
+    private LinkedList<Candidato> listaCandidatos = new LinkedList<>();
+    private Stack<Voto> historialVoto= new Stack<>();
+    private Queue<Voto> votosReportados= new LinkedList<>();
+    private int idCounter=0;
+
+    public boolean verificarVotante(Votante votante){
+        return votante.getYaVoto();
+    }
+    public void registrarVoto(Votante votante, int candidatoID){
+
+        if (!verificarVotante(votante)){
+            String hora = java.time.LocalTime.now().toString();
+            Voto voto = new Voto(idCounter++,votante.getId(),candidatoID,hora);
+        }
     }
 
 }
