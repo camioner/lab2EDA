@@ -1,5 +1,6 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -11,7 +12,7 @@ class Voto {
     private int candidatoId = 0;
     private String timeStamps = "";
 
-    public Voto(int id,int votanteId,int candidatoId, String timeStamps) {
+    public Voto(int id, int votanteId, int candidatoId, String timeStamps) {
         setId();
         setVotanteId();
         setCandidatoId();
@@ -59,6 +60,7 @@ class Voto {
     }
 
 }
+
 class Candidato {
     private int id;
     private String nombre;
@@ -71,12 +73,15 @@ class Candidato {
         this.partido = partido;
         this.votosRecibidos = new LinkedList<>();
     }
+
     public int getId() {
         return id;
     }
+
     public String getNombre() {
         return nombre;
     }
+
     public String getPartido() {
         return partido;
     }
@@ -84,15 +89,19 @@ class Candidato {
     public void setId(int id) {
         this.id = id;
     }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
     public void setPartido(String partido) {
         this.partido = partido;
     }
-    public void agregarVoto(Voto v){
+
+    public void agregarVoto(Voto v) {
         votosRecibidos.add(v);
     }
+
     public Queue<Voto> getVotosRecibidos() {
         return votosRecibidos;
     }
@@ -145,23 +154,48 @@ class Votante {
 
 class UrnaElectoral {
     private LinkedList<Candidato> listaCandidatos = new LinkedList<>();
-    private Stack<Voto> historialVoto= new Stack<>();
-    private Queue<Voto> votosReportados= new LinkedList<>();
-    private int idCounter=0;
+    private Stack<Voto> historialVoto = new Stack<>();
+    private Queue<Voto> votosReportados = new LinkedList<>();
+    private int idCounter = 0;
 
-    public boolean verificarVotante(Votante votante){
+    public boolean verificarVotante(Votante votante) {
         return votante.getYaVoto();
     }
-    public void registrarVoto(Votante votante, int candidatoID){
 
-        if (!verificarVotante(votante)){
+    public void registrarVoto(Votante votante, int candidatoID) {
+
+        if (!verificarVotante(votante)) {
             String hora = java.time.LocalTime.now().toString();
-            Voto voto = new Voto(idCounter++,votante.getId(),candidatoID,hora);
+            Voto voto = new Voto(idCounter++, votante.getId(), candidatoID, hora);
+
+
+            for (int i = 0; i < listaCandidatos.size(); i++) {
+                if (listaCandidatos.get(i).getId() == candidatoID) {
+                    if (reportarVoto(listaCandidatos.get(i),voto.getId())) {
+
+
+                    }
+                    historialVoto.push(voto);
+                    listaCandidatos.get(i).agregarVoto(voto);
+                }
+            }
+            votante.marcarComoVotado();
         }
     }
 
-}
+    public void reportarVoto(Candidato candidato, int idVoto) {
+                Queue <Voto> votosauxiliares = new LinkedList<>();
+        for (int i = 0; i < candidato.getVotosRecibidos().size(); i++) {
+            votosauxiliares=candidato.getVotosRecibidos();
 
+
+
+
+        }
+
+    }
+        return boolean confirmado = true;
+}
 
 
 public class Main {
