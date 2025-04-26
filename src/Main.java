@@ -13,10 +13,10 @@ class Voto {
     private String timeStamps = "";
 
     public Voto(int id, int votanteId, int candidatoId, String timeStamps) {
-        setId();
-        setVotanteId();
-        setCandidatoId();
-        setTimeStamps();
+        this.id = id;
+        this.votanteId = votanteId;
+        this.candidatoId = candidatoId;
+        this.timeStamps = timeStamps;
     }
 
     public void setId() {
@@ -165,43 +165,98 @@ class UrnaElectoral {
     public void registrarVoto(Votante votante, int candidatoID) {
 
         if (!verificarVotante(votante)) {
-            String hora = java.time.LocalTime.now().toString();
-            Voto voto = new Voto(idCounter++, votante.getId(), candidatoID, hora);
-
-
-            for (int i = 0; i < listaCandidatos.size(); i++) {
-                if (listaCandidatos.get(i).getId() == candidatoID) {
-                    if (reportarVoto(listaCandidatos.get(i),voto.getId())) {
-
-
-                    }
-                    historialVoto.push(voto);
-                    listaCandidatos.get(i).agregarVoto(voto);
-                }
-            }
-            votante.marcarComoVotado();
+            System.out.println("El votante ya ha votado");
+            return;
         }
+        Candidato candidato = getcandidato(candidatoID);
+        if (candidato == null) {
+            System.out.println("no se enccuenta el candidato");
+        }
+
+        String hora = java.time.LocalTime.now().toString();
+        Voto voto = new Voto(idCounter++, votante.getId(), candidatoID, hora);
+
+        historialVoto.push(voto);
+        candidato.agregarVoto(voto);
+        votante.marcarComoVotado();
+
+
     }
 
     public void reportarVoto(Candidato candidato, int idVoto) {
-                Queue <Voto> votosauxiliares = new LinkedList<>();
+        Queue<Voto> votosauxiliares = new LinkedList<>();
+        boolean yes = false;
+
         for (int i = 0; i < candidato.getVotosRecibidos().size(); i++) {
-            votosauxiliares=candidato.getVotosRecibidos();
-
-
-
-
+            Voto v = candidato.getVotosRecibidos().poll();
+            if (v.getId() == idVoto) {
+                votosReportados.add(v);
+                yes = true;
+                System.out.println("Voto con ID " + idVoto + " reportado correctamente.");
+            } else {
+                votosauxiliares.add(v);
+            }
         }
 
+        candidato.getVotosRecibidos().addAll(votosauxiliares);
+        if (!yes) {
+            System.out.println(" No se encontró un voto con ID " + idVoto + ".");
+        }
     }
-        return boolean confirmado = true;
+
+    public void obtenerResultados() {
+        System.out.println("=== Resultados de la elección ===");
+
+        if (listaCandidatos.isEmpty()) {
+            System.out.println("No hay candidatos registrados.");
+            return;
+        }
+
+        for (Candidato c : listaCandidatos) {
+            String nombre = c.getNombre();
+            String partido = c.getPartido();
+            int cantidadVotos = c.getVotosRecibidos().size();
+
+            System.out.println(nombre + " (" + partido + "): " + cantidadVotos + " votos");
+        }
+    }
+
+    public void setListaCandidatos(Candidato c){
+        listaCandidatos.add(c);
+    }
+
+    public Candidato getcandidato(int idcandidato) {
+        for (Candidato c : listaCandidatos) {
+            if (c.getId()==idcandidato) {
+                return c;
+            }
+        }
+        return null;
+    }
+
 }
+
+
+
 
 
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        System.out.printf("Hello and welcome! , estas son las votaciones");
+        while (true) {
+            System.out.printf("escoja una opcion para continuar");
+            System.out.printf("1. votar" +
+                    "2.agregar candidato a la urna" + " "
+            );
+            Scanner sc = new Scanner(System.in);
+
+        }
+
+
+
+
+
+
+
     }
 }
