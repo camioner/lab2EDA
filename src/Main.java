@@ -113,10 +113,9 @@ class Votante {
     private String nombre = "";
     private boolean yaVoto = false;
 
-    public Votante() {
-        setId();
-        setNombre();
-        setYaVoto();
+    public Votante(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
 
     }
 
@@ -128,14 +127,8 @@ class Votante {
 
     public void setNombre() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Digite el nombre: ");
+        System.out.println("Digite su nombre: ");
         this.nombre = sc.nextLine();
-    }
-
-    public void setYaVoto() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Digite si ya voto: ");
-        this.yaVoto = sc.nextBoolean();
     }
 
     public int getId() {
@@ -164,7 +157,7 @@ class UrnaElectoral {
 
     public void registrarVoto(Votante votante, int candidatoID) {
 
-        if (!verificarVotante(votante)) {
+        if (verificarVotante(votante)) {
             System.out.println("El votante ya ha votado");
             return;
         }
@@ -221,13 +214,13 @@ class UrnaElectoral {
         }
     }
 
-    public void setListaCandidatos(Candidato c){
+    public void setListaCandidatos(Candidato c) {
         listaCandidatos.add(c);
     }
 
     public Candidato getcandidato(int idcandidato) {
         for (Candidato c : listaCandidatos) {
-            if (c.getId()==idcandidato) {
+            if (c.getId() == idcandidato) {
                 return c;
             }
         }
@@ -237,26 +230,93 @@ class UrnaElectoral {
 }
 
 
-
-
-
 public class Main {
     public static void main(String[] args) {
         System.out.printf("Hello and welcome! , estas son las votaciones");
+        Scanner sc = new Scanner(System.in);
+        UrnaElectoral urna = new UrnaElectoral();
+        LinkedList<Votante> listaVotantes = new LinkedList<>();
+
         while (true) {
-            System.out.printf("escoja una opcion para continuar");
-            System.out.printf("1. votar" +
-                    "2.agregar candidato a la urna" + " "
-            );
-            Scanner sc = new Scanner(System.in);
+            System.out.println("\nSeleccione una opción para continuar:");
+            System.out.println("1. Registrar votante");
+            System.out.println("2. Agregar candidato");
+            System.out.println("3. Votar");
+            System.out.println("4. Reportar voto");
+            System.out.println("5. Ver resultados");
+            System.out.println("6. Salir");
+            System.out.print("Opción: ");
 
+            int opcion = sc.nextInt();
+            sc.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese ID del votante: ");
+                    int idNuevo = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Ingrese nombre del votante: ");
+                    String nombreNuevo = sc.nextLine();
+                    listaVotantes.add(new Votante(idNuevo, nombreNuevo));
+                    System.out.println("Votante registrado exitosamente.");
+                    break;
+
+                case 2:
+                    System.out.print("Nombre del candidato: ");
+                    String nombreCandidato = sc.nextLine();
+                    System.out.print("Partido: ");
+                    String partido = sc.nextLine();
+                    System.out.print("ID del candidato: ");
+                    int idCandidato = sc.nextInt();
+                    urna.setListaCandidatos(new Candidato(idCandidato, nombreCandidato, partido));
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese su ID de votante: ");
+                    int idVotante = sc.nextInt();
+                    Votante votanteEncontrado = null;
+
+                    for (Votante v : listaVotantes) {
+                        if (v.getId() == idVotante) {
+                            votanteEncontrado = v;
+                            break;
+                        }
+                    }
+
+                    if (votanteEncontrado == null) {
+                        System.out.println("Votante no registrado. Regístrese antes de votar.");
+                        break;
+                    }
+
+                    System.out.print("Ingrese ID del candidato: ");
+                    int idCandidatoVoto = sc.nextInt();
+                    urna.registrarVoto(votanteEncontrado, idCandidatoVoto);
+                    break;
+
+                case 4:
+                    System.out.print("ID del candidato: ");
+                    int idCan = sc.nextInt();
+                    Candidato candidato = urna.getcandidato(idCan);
+                    if (candidato == null) {
+                        System.out.println("Candidato no encontrado.");
+                        break;
+                    }
+                    System.out.print("ID del voto a reportar: ");
+                    int idVoto = sc.nextInt();
+                    urna.reportarVoto(candidato, idVoto);
+                    break;
+
+                case 5:
+                    urna.obtenerResultados();
+                    break;
+
+                case 6:
+                    System.out.println("Gracias por usar el sistema. ¡Hasta luego!");
+                    return;
+
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+            }
         }
-
-
-
-
-
-
-
     }
 }
